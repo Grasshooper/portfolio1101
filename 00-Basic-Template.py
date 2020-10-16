@@ -1,11 +1,29 @@
-from flask import Flask, render_template
-app = Flask(__name__)
+from selenium import webdriver
+from shutil import which
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 
+chrome_options = Options()
+chrome_options.add_argument("--headless")
 
-@app.route('/')
-def index():
-    # Connecting to a template (html file)
-    return render_template('00-Basic-Template.html')
+chrome_path = which("./chromedriver")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+driver = webdriver.Chrome(executable_path=chrome_path, options=chrome_options)
+driver.get("https://duckduckgo.com")
+
+search_input = driver.find_element_by_xpath(
+    "(//input[contains(@class, 'js-search-input')][1])")
+# driver.find_element_by_class_name()
+# driver.find_elements_by_class_name()
+# driver.find_elements_by_css_selector()
+search_input.send_keys("My User Agent")
+
+#search_btn = driver.find_element_by_id("search_button_homepage")
+# search_btn.click()
+
+search_input.send_keys(Keys.ENTER)
+
+print(driver.page_source)
+
+driver.close()
+
